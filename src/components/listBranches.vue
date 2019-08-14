@@ -1,8 +1,8 @@
 <template>
   <ul id="branches">
     <li v-for="rama in branches" :key="rama.name">
-      <input @click="viewBranch" v-model="branch" type="radio" :value="rama.name" :id="rama.name">
-      <label :for="rama.name">{{rama.name}}</label>
+      <input @click="viewBranch(rama.name)" v-model="branch" type="radio" :value="rama.name" :id="rama.commit.sha">
+      <label :for="rama.commit.sha">{{rama.name}}</label>
     </li>
   </ul>
 </template>
@@ -20,8 +20,9 @@ export default {
     }
   },
   methods:{
-    viewBranch(){
-
+    viewBranch(valor){
+      this.branch = valor;
+      console.log(this.branch);
     }
   },
   created() {
@@ -34,6 +35,7 @@ export default {
       lista.forEach(branch => {
         this.branches.push(branch);
       });
+      console.log(this.branches);
     })
     .catch(e => {
         this.branches.push(e);
@@ -49,6 +51,8 @@ export default {
   display: flex;
   flex-wrap: wrap;
   list-style: none;
+  width: 650px;
+  margin: auto;
 }
 
 #branches li{
