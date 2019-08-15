@@ -2,10 +2,10 @@
   <div class="commit">
     
     <p>
-      <a :href="commit.html_url" class="link">{{commit.committer.id}}</a> {{commit.message}} <br>
-      by: <a :href="commit.author.hmlt_url">{{commit.author.name}}</a> at {{commit.committer.date}} 
+      <a :href="commit.html_url" class="link">{{commit.committer.id}}</a> {{commit.commit.message}} <br>
+      by: <a :href="commit.author.html_url">{{commit.commit.author.name}}</a> at {{commit.commit.committer.date}} 
     </p>
-    
+
     
   </div>
 </template>
@@ -14,7 +14,7 @@
 export default {
   name: 'Commit',
   props: {
-    msg: String
+    commit: Object
   },
   data(){
     return{

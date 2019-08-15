@@ -1,34 +1,43 @@
 <template>
   <div class="commits">
+    
     <div v-for="commit in commits" :key="commit.sha">
-        <div v-for="com in commit">
-            <p>{{com.sha}}</p>
-        </div>
+
+      <Commit :commit="commit"/>
+
             
         
     </div>
+
+
   </div>
 </template>
 
 <script>
 
-import axios from 'axios'
+import Commit from './Commit.vue'
 
 export default {
   name: 'Commits',
-
+  props:{
+    commits: Array,
+    
+  },
+  components:{
+    Commit
+  },
   data: function() {
     return {
-        commits: []
+        /* commits: [] */
     }
   },
 
-  created: function() {
+/*   created: function() {
     axios.get('https://api.github.com/repos/LuisJoseSanchez/aprende-java-con-ejercicios/commits?sha=master')
     .then(response => {
       this.commits.push(response.data);
     })
-  }
+  } */
 }
 </script>
 

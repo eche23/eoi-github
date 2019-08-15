@@ -1,7 +1,7 @@
 <template>
   <ul id="branches">
     <li v-for="rama in branches" :key="rama.sha">
-      <input @click="viewBranch(rama.name)" v-model="branch" type="radio" :value="rama.name" :id="rama.sha">
+      <input @click="$emit('select-branch', rama.name)" v-model="branch" type="radio" :value="rama.name" :id="rama.sha">
       <label :for="rama.sha">{{rama.name}}</label>
     </li>
   </ul>
@@ -13,6 +13,9 @@ import axios from 'axios';
 
 export default {
   name: 'listBranches',
+  props: {
+    url: String
+  },
   data(){
     return {
       branch:"",
@@ -20,17 +23,13 @@ export default {
     }
   },
   methods:{
-    viewBranch(valor){
-      this.branch = valor;
-    }
+
   },
   created() {
-    axios.get(`https://api.github.com/repos/python-telegram-bot/python-telegram-bot/branches`)
+    axios.get(this.url+'branches')
     .then(response => {
       var lista =response.data;
-
       lista=lista.slice(lista.length-5);
-
       lista.forEach(branch => {
         this.branches.push({name:branch.name,sha:branch.commit.sha});
       });

@@ -2,27 +2,51 @@
   <div id="app">
 
     <img alt="Vue logo" src="./assets/logo.png">
-    <Commits msg="Welcome to Your Vue.js App"/>
-    <Commit/>
-
-    <h1>Lastest repo user Commits</h1>
-    <listBranches/>
+    <h1>Latest repo user Commits</h1>
+    <listBranches @select-branch="selectBranch" :url="url"/>
+    <Commits :commits="commits" :branch="branch"/>
   </div>
 </template>
 
 <script>
 
 
-import Commit from './components/Commit.vue'
+
 import Commits from './components/Commits.vue'
-import listBranches from './components/listBranches.vue';
+import listBranches from './components/listBranches.vue'
+import axios from 'axios'
+
+
 
 export default {
   name: 'app',
   components: {
-    Commit,
     Commits,
     listBranches
+  },
+  props:{
+
+  },
+  data(){
+    return{
+      commits: [],
+      url: 'https://api.github.com/repos/python-telegram-bot/python-telegram-bot/'
+
+    }
+  },
+  methods: {
+    selectBranch(branch){
+      console.log(branch);
+      axios.get(this.url+"commits?sha="+branch)
+        .then(res => {
+          
+          let list = res.data;
+          list = list.slice(list.length-5);
+          this.commits = list;
+          console.log(this.commits);
+        })
+        .catch(err => console.log(err));
+    }
   }
 }
 
