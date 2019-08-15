@@ -23,7 +23,7 @@ export default {
     }
   },
   created() {
-    axios.get(this.url+'branches')
+    axios.get(this.url+'/branches')
     .then(response => {
       var lista =response.data;
       lista=lista.slice(lista.length-5);

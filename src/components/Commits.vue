@@ -1,14 +1,12 @@
 <template>
   <div class="commits">
     <h2 v-if="repo.user!=''">{{repo.user}}/{{repo.name}}@{{repo.branch}}</h2>
+    
     <div v-for="commit in commits" :key="commit.sha">
 
       <Commit :commit="commit"/>
-
-            
         
     </div>
-
 
   </div>
 </template>

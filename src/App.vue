@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png">
+    <input type="text" v-model="url" @keyup.enter="getUrl" placeholder="Url" />
     <h1>Latest repo user Commits</h1>
     <listBranches @select-branch="selectBranch" :url="url"/>
     <Commits :commits="commits" :repo="repo"/>
@@ -8,6 +9,8 @@
 </template>
 
 <script>
+
+//https://api.github.com/repos/python-telegram-bot/python-telegram-bot/
 
 import Commits from './components/Commits.vue'
 import listBranches from './components/listBranches.vue'
@@ -25,7 +28,7 @@ export default {
   data(){
     return{
       commits: [],
-      url: 'https://api.github.com/repos/python-telegram-bot/python-telegram-bot/',
+      url: '',
       repo:{
         user: '',
         name: '',
@@ -42,7 +45,7 @@ export default {
       this.repo.user = this.url.split('/')[4];
       this.repo.name = this.url.split('/')[5];
 
-      axios.get(this.url+"commits?sha="+branch)
+      axios.get(this.url+"/commits?sha="+branch)
         .then(res => {
           
           let list = res.data;
@@ -51,6 +54,9 @@ export default {
           console.log(this.commits);
         })
         .catch(err => console.log(err));
+    },
+    getUrl(){
+      this.url=this.url.replace('https://github.com/','https://api.github.com/repos/');
     }
   }
 }
