@@ -14,29 +14,13 @@ import axios from 'axios';
 export default {
   name: 'listBranches',
   props: {
-    url: String
+    branches: Array
   },
   data(){
-    return {
-      branch:"",
-      branches:[]
+    return{
+      branch:''
     }
-  },
-  created() {
-    axios.get(this.url+'/branches')
-    .then(response => {
-      var lista =response.data;
-      lista=lista.slice(lista.length-5);
-      lista.forEach(branch => {
-        this.branches.push({name:branch.name,sha:branch.commit.sha});
-      });
-
-    })
-    .catch(e => {
-        this.branches.push(e);
-    })
   }
-
 }
 
 </script>

@@ -1,17 +1,15 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <input type="text" v-model="url" @keyup.enter="getUrl" placeholder="Url" />
-    <h1>Latest repo user Commits</h1>
-    <listBranches @select-branch="selectBranch" :url="url"/>
+    <input type="text" v-model="url" placeholder="Url" />
+    <p v-if="error!=''">{{error}}</p>
+    <h1 v-if="repo.user==''"></h1>
+    <h1 v-else >Latest {{repo.name}} {{repo.user}} Commits</h1>
+    <listBranches @select-branch="selectBranch" :branches="branches"/>
     <Commits :commits="commits" :repo="repo"/>
   </div>
 </template>
 
 <script>
-
-//https://api.github.com/repos/python-telegram-bot/python-telegram-bot/
-
 import Commits from './components/Commits.vue'
 import listBranches from './components/listBranches.vue'
 import axios from 'axios'
@@ -22,41 +20,66 @@ export default {
     Commits,
     listBranches
   },
-  props:{
-
-  },
   data(){
     return{
       commits: [],
+      branches: [],
       url: '',
-      repo:{
+      newUrl:'',
+      error:'',
+      repo: {
         user: '',
         name: '',
         branch: ''
       }
     }
   },
+  watch:{
+    'url'(){
+      this.newUrl=this.url.replace('https://github.com/','https://api.github.com/repos/');
+
+      this.branches=[];
+      this.commits=[];
+      
+      if(!this.newUrl.includes('https://api.github.com/repos/')){
+        this.error='Mira que esto no es de github';
+        return;
+      }
+      
+      this.repo.user = this.newUrl.split('/')[4];
+      this.repo.name = this.newUrl.split('/')[5];
+     
+      axios.get(this.newUrl+'/branches')
+      .then(response => {
+        var lista = response.data.splice(0,5);
+        lista.forEach(branch => {
+          this.branches.push({name:branch.name,sha:branch.commit.sha});
+        });
+      })
+      .catch(e => {
+        this.repo= {
+          user: '',
+          name: '',
+          branch: ''
+        }
+        this.error=e;
+        console.log(e);
+      });
+
+    }
+  },
   methods: {
     selectBranch(branch){
-
-      console.log(branch);
-
+      
       this.repo.branch = branch;
-      this.repo.user = this.url.split('/')[4];
-      this.repo.name = this.url.split('/')[5];
 
-      axios.get(this.url+"/commits?sha="+branch)
-        .then(res => {
-          
-          let list = res.data;
-          list = list.slice(list.length-5);
-          this.commits = list;
-          console.log(this.commits);
-        })
-        .catch(err => console.log(err));
-    },
-    getUrl(){
-      this.url=this.url.replace('https://github.com/','https://api.github.com/repos/');
+      axios.get(this.newUrl+"/commits?sha="+branch)
+      .then(res => {
+        let list = res.data;
+        list = list.slice(list.length-5);
+        this.commits = list;
+      })
+      .catch(err => console.log(err));
     }
   }
 }
@@ -77,5 +100,7 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin: 3rem;
+  display: flex;
+  flex-direction: column;
 }
 </style>
