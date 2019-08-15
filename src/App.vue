@@ -1,22 +1,17 @@
 <template>
   <div id="app">
-
     <img alt="Vue logo" src="./assets/logo.png">
     <h1>Latest repo user Commits</h1>
     <listBranches @select-branch="selectBranch" :url="url"/>
-    <Commits :commits="commits" :branch="branch"/>
+    <Commits :commits="commits" :repo="repo"/>
   </div>
 </template>
 
 <script>
 
-
-
 import Commits from './components/Commits.vue'
 import listBranches from './components/listBranches.vue'
 import axios from 'axios'
-
-
 
 export default {
   name: 'app',
@@ -30,13 +25,23 @@ export default {
   data(){
     return{
       commits: [],
-      url: 'https://api.github.com/repos/python-telegram-bot/python-telegram-bot/'
-
+      url: 'https://api.github.com/repos/python-telegram-bot/python-telegram-bot/',
+      repo:{
+        user: '',
+        name: '',
+        branch: ''
+      }
     }
   },
   methods: {
     selectBranch(branch){
+
       console.log(branch);
+
+      this.repo.branch = branch;
+      this.repo.user = this.url.split('/')[4];
+      this.repo.name = this.url.split('/')[5];
+
       axios.get(this.url+"commits?sha="+branch)
         .then(res => {
           

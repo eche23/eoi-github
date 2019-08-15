@@ -1,6 +1,6 @@
 <template>
   <div class="commits">
-    
+    <h2 v-if="repo.user!=''">{{repo.user}}/{{repo.name}}@{{repo.branch}}</h2>
     <div v-for="commit in commits" :key="commit.sha">
 
       <Commit :commit="commit"/>
@@ -21,7 +21,7 @@ export default {
   name: 'Commits',
   props:{
     commits: Array,
-    
+    repo: Object
   },
   components:{
     Commit

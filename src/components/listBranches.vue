@@ -22,9 +22,6 @@ export default {
       branches:[]
     }
   },
-  methods:{
-
-  },
   created() {
     axios.get(this.url+'branches')
     .then(response => {
